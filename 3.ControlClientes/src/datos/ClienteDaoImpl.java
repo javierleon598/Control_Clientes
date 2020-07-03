@@ -125,9 +125,11 @@ public class ClienteDaoImpl implements ClienteDao {
 
 		try {
 			conn = this.conexionTransaccional != null ? this.conexionTransaccional : Conexion.getConnection();
-			stmt = conn.prepareStatement(SQL_SELECT_BY_ID);
+			stmt = conn.prepareStatement(SQL_SELECT_BY_ID,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			stmt.setInt(1, cliente.getIdCliente());
 			rs = stmt.executeQuery();
+			
+			//if (rs.next()) {
 			rs.absolute(1);//se posiciona en el primer registro devuelto
 
 			int idCliente = rs.getInt("id_cliente");
@@ -139,6 +141,7 @@ public class ClienteDaoImpl implements ClienteDao {
 
 			cliente = new ClienteDTO(idCliente, nombre, apellido, email, telefono, saldo);
  
+			//}
 			System.out.println("Ejecutando Query: " + SQL_SELECT_BY_ID);
 		} catch (SQLException e) {
 			e.printStackTrace(System.out);
